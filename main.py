@@ -4,4 +4,5 @@ from problems import SingleFoodSearchProblem
 
 problem = SingleFoodSearchProblem('pacman_single01.txt')
 # print('DFS:', dfs(problem))
-problem.animate(dfs(problem))
+problem.animate(ucs(problem))
+

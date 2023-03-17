@@ -61,7 +61,6 @@ class SingleFoodSearchProblem:
             os.system('cls')
             self.print_input()
             self.initial_state
-
             input()
             for i in action:
                 os.system('cls')
@@ -92,9 +91,61 @@ class SingleFoodSearchProblem:
                     self.input_array[new_pacman_pos] = "P"
                     self.initial_state = new_pacman_pos
                 self.print_input()
-                input()
+                input()# Enter sau mỗi lần lặp để render ra scene mới
 
         else:
 
             print('Path is not found.')
 
+class MultiFoodSearchProblem:
+    def __init__(self, input_file):
+        self.input_file = input_file
+        self.load_input()
+
+    def load_input(self):
+        with open(self.input_file, 'r') as f:
+            input_data = f.readlines()
+        food = []
+        input_layout = []
+        for line in input_data:
+            if re.match("^[%. P]+$", line.strip()):
+                input_layout.append(list(line.strip()))
+
+        # Chuyển input layout sang mảng numpy
+        self.input_array = np.array(input_layout)
+
+        # Vị trí ban đầu của Pac-man
+        start_pos = np.argwhere(self.input_array == 'P')[0]
+        # Vị trí của mồi
+        print(food)
+        # Initial state
+        self.initial_state = tuple(start_pos)
+
+        # Tất cả vị trí của mồi
+        self.food = np.argwhere(self.input_array == '.')
+    def successor(self, state):
+        successors = []
+        x, y = state
+
+        for action in ['N', 'S', 'E', 'W']:
+            if action == 'N' and x > 0 and self.input_array[x-1][y] != '%':
+                successors.append(((x-1, y), action))
+            elif action == 'S' and x < len(self.input_array)-1 and self.input_array[x+1][y] != '%':
+                successors.append(((x+1, y), action))
+            elif action == 'W' and y > 0 and self.input_array[x][y-1] != '%':
+                successors.append(((x, y-1), action))
+            elif action == 'E' and y < len(self.input_array[x])-1 and self.input_array[x][y+1] != '%':
+                successors.append(((x, y+1), action))
+        return successors
+    def print_input(self):
+        for line in self.input_array:
+            print(''.join(line))
+
+    def goal_test(self, state):
+        return state == self.goal_pos
+
+    def initial_state(self):
+        return self.start_state
+
+    def path_cost(self, actions):
+        return len(actions)
