@@ -6,6 +6,7 @@ problem = problems.SingleFoodSearchProblem("pacman_single01.txt")
 queue = fringes.Queue()
 priorityQueue = fringes.PriorityQueue()
 
+
 def bfs(problem):
     path = queue
     visited = set()
@@ -22,6 +23,7 @@ def bfs(problem):
                 path.enqueue((successor, actions + [action]))
     return None
 
+
 def dfs(problem):
     path = queue
     visited = set()
@@ -29,7 +31,16 @@ def dfs(problem):
     path.enqueue((start_state, []))
     while not path.is_empty():
         state, actions = path.dequeue()
-        if problem.goal_test(state):
+        if isinstance(problem.foods, list):
+            if problem.goal_test(state):
+                problem.foods.remove(state)
+                if len(problem.foods) == 0:
+                    actions.append("Stop")
+                    return actions
+                else:
+                    start_state = state
+                    #TODO:
+        elif problem.goal_test(state):
             actions.append("Stop")
             return actions
         visited.add(state)
@@ -59,4 +70,3 @@ def ucs(problem):
                 path.remove((successor, actions))
                 path.enqueue((successor, actions + [action]), cost)
     return None
-
